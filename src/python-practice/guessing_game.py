@@ -1,26 +1,50 @@
 import random
 
+
+def safe_input(prompt):
+    """Return user input or None if the user triggers EOF/interrupt."""
+    try:
+        return input(prompt)
+    except (EOFError, KeyboardInterrupt):
+        print("\nExiting game.")
+        return None
+
+
+def get_positive_int(prompt):
+    """Prompt until the user provides a positive integer or exits."""
+    while True:
+        user_input = safe_input(prompt)
+        if user_input is None:
+            return None
+
+        user_input = user_input.strip()
+        if not user_input.isdigit():
+            print("Please enter a valid positive integer.")
+            continue
+
+        value = int(user_input)
+        if value <= 0:
+            print("Please enter a number greater than zero.")
+            continue
+
+        return value
+
+
 def play_game():
+    max_number = get_positive_int("Enter the maximum number for the guessing range: ")
+    if max_number is None:
+        return False
 
-    max_number = input("Enter the maximum number for the guessing range: ")
-
-    if not max_number.isdigit():
-        print("Please enter a valid positive integer.")
-        return
-    max_number = int(max_number)
     secret_number = random.randint(1, max_number)
     attempts = 0
 
     print(f"I'm thinking of a number between 1 and {max_number}. You have 5 attempts to guess it!")
 
     while attempts < 5:
-        guess = input("Take a guess: ")
-        
-        if not guess.isdigit():
-            print("Please enter a valid number.")
-            continue
+        guess = get_positive_int("Take a guess: ")
+        if guess is None:
+            return False
 
-        guess = int(guess)
         attempts += 1
 
         if guess < secret_number:
@@ -29,14 +53,17 @@ def play_game():
             print("Too high!")
         else:
             print(f"🎉 Correct! You guessed it in {attempts} attempts.")
-            break
+            return True
 
-    if attempts == 5 and guess != secret_number:
-        print(f"Sorry, you've used all your attempts. The number was {secret_number}.")
+    print(f"Sorry, you've used all your attempts. The number was {secret_number}.")
+    return True
+
 
 while True:
-    play_game()
-    play_again = input("play again? (yes/no): ").strip().lower()
+    finished = play_game()
+    if not finished:
+        break
 
-    if play_again != 'yes':
+    play_again = safe_input("play again? (yes/no): ")
+    if play_again is None or play_again.strip().lower() != "yes":
         break
