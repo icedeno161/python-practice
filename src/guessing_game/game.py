@@ -33,22 +33,22 @@ class GuessingGame:
             return "Too high!"
         return "Correct!"
 
-    def play(self) -> None:
-        """Run one full game round."""
+    def play(self) -> tuple[bool, int]:
+        """Run one full game round. Returns (won, attempts_used)."""
         print(
             f"I'm thinking of a number between 1 and {self.max_number}. "
             f"You have {self.max_attempts} attempts!"
         )
 
-        # Keep asking for guesses until user wins or runs out of attempts
         while self.attempts < self.max_attempts:
-            guess = ask_positive_int("Take a guess: ")  # Prompts until a valid positive int
+            guess = ask_positive_int("Take a guess: ")
             result = self.make_guess(guess)
 
             if result == "Correct!":
                 print(f"🎉 Correct! You guessed it in {self.attempts} attempts.")
-                return
+                return True, self.attempts
             else:
                 print(result)
 
         print(f"Out of attempts! The number was {self.secret_number}.")
+        return False, self.attempts
