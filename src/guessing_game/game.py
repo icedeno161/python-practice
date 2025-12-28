@@ -6,10 +6,11 @@ from .utils import ask_positive_int
 
 @dataclass
 class GuessingGame:
+    """Small number guessing game with limited attempts."""
     max_attempts: int = 5
     max_number: int = 10
-    secret_number: int = field(init=False)
-    attempts: int = field(default=0, init=False)
+    secret_number: int = field(init=False)  # Chosen per round; hidden from the player
+    attempts: int = field(default=0, init=False)  # Count guesses taken in current round
 
     def __post_init__(self) -> None:
         # Create a secret number after max_number is known
@@ -39,8 +40,9 @@ class GuessingGame:
             f"You have {self.max_attempts} attempts!"
         )
 
+        # Keep asking for guesses until user wins or runs out of attempts
         while self.attempts < self.max_attempts:
-            guess = ask_positive_int("Take a guess: ")
+            guess = ask_positive_int("Take a guess: ")  # Prompts until a valid positive int
             result = self.make_guess(guess)
 
             if result == "Correct!":
