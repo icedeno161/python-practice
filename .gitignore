@@ -11,5 +11,10 @@ __pycache__/
 # VS Code
 .vscode/
 
-# OS junk
+# Runtime data
+stats.json
+
+# package metadata
+*.egg-info/
+
 .DS_Store
